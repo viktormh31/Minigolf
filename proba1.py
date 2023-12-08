@@ -88,5 +88,6 @@ for _ in range(1000):
     time.sleep(time_step)
     p.stepSimulation()
     print("hello")
+    print("hi")
 input() 
 
