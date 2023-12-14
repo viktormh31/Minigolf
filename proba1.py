@@ -56,6 +56,10 @@ def import_box(start_position):
     p.changeDynamics(box_1,-1,mass = 0.0, restitution = .9)
     return box_1
 
+def import_teren(start_position):
+    urdf_file_path= '/home/viktor/Documents/DIPLOMSKI/custom urdf/podloga.urdf'
+    teren = p.loadURDF(urdf_file_path,start_position,p.getQuaternionFromEuler([0,0,0]))
+    return teren
 
 def create_soccerball():
     ball = p.loadURDF("soccerball.urdf",[0,0,1])
@@ -65,6 +69,8 @@ def create_soccerball():
 
     return ball
 
+teren2 = p.loadSoftBody("/home/viktor/Documents/DIPLOMSKI/custom urdf/teren.dae")
+
 
 #pomeranje
 force_magnitude = 6000
@@ -72,11 +78,14 @@ time_step = 1 / 800.0
 
 #p.setTimeStep(time_step)
 #bola = create_soccerball()
-bola2 = create_sphere()
-box = create_box()
+#bola2 = create_sphere()
+#box = create_box()
 p.setGravity(0,0,-9.81)
 #time.sleep(2)
-p.applyExternalForce(bola2,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,1], flags= p.WORLD_FRAME)
+#p.applyExternalForce(bola2,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,1], flags= p.WORLD_FRAME
+
+
+#import_teren([0,0,0])
 
 time.sleep(1)
 #p.applyExternalForce(bola,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,0], flags= p.WORLD_FRAME)
@@ -87,6 +96,6 @@ time.sleep(1)
 for _ in range(1000):
     time.sleep(time_step)
     p.stepSimulation()
-    print("hello")
+    #print("hello")
 input() 
 

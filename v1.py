@@ -25,7 +25,11 @@ def create_sphere(radius, start_position):
                      lateralFriction = 0.01, mass = 5)
     return sphere_1
 
-
+def import_teren(start_position):
+    urdf_file_path= '/home/viktor/Documents/DIPLOMSKI/custom urdf/podloga.urdf'
+    teren = p.loadURDF(urdf_file_path,start_position,p.getQuaternionFromEuler([0,0,0]))
+    p.changeDynamics(teren,-1,mass = 0.0, restitution = .3)
+    return teren
 
 #creating a box
 def create_box(dimensions, start_position, start_orientation):
@@ -77,20 +81,21 @@ p.setGravity(0,0,-9.81)
 
 
 #---------------main funkcije-------------------
-lopta = create_sphere(.2,[0,0,0.2])
+lopta = create_sphere(.1,[0,0.2,3.3])
+teren = import_teren([0,0,1])
 #box = create_box([1, 1, 1],[3, 0, 1],[0, 0, 1.7, 1])
 #box_2 = create_box([1,1,1],[0,-3,1],[0,0,0,2])
-#box3 = import_box([2,0,0])
+box3 = import_box([1,0,0])
 
-box4 = import_cylinder([2,0,-.055])
+#box4 = import_cylinder([2,0,-.055])
 #visual_shape_1 = p.createVisualShape(p.GEOM_BOX, rgbaColor=[0, 0, 0, 0])
 #p.changeVisualShape(box3,-1,baseVisualShape = visual_shape_1)
 #proba = p.loadSoftBody('/home/viktor/Documents/DIPLOMSKI/proba1/probaobj.obj')
 
-p.applyExternalForce(lopta,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,1], flags= p.LINK_FRAME)
+#p.applyExternalForce(lopta,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,1], flags= p.LINK_FRAME)
 
 
-time.sleep(2)
+time.sleep(4)
 
 #custom = p.loadURDF('/home/viktor/Documents/Minigolf/custom urdf/customurdf1.urdf')
 
@@ -103,13 +108,13 @@ while(p.isConnected()):
     time.sleep(time_step)
     p.stepSimulation()
     
-    contact = p.getContactPoints(lopta,box4)
+    contact = p.getContactPoints(lopta,box3)
     
     #prvo ovaj if, zato sto ukoliko lopta upadne i mi izadjemo iz simulacije, vise ne moze da se ocita velocity pa izbacuje error
     if p.getBaseVelocity(lopta)[0][0] < 0.01 and p.getBaseVelocity(lopta)[0][1] < 0.01:
         print("Lopta stala\n\n\n")
-        time.sleep(1)
-        p.disconnect()
+        #time.sleep(1)
+        #p.disconnect()
     
     if len(contact) > 0 and flag == 0:
         print("Upala u rupu")
@@ -119,9 +124,9 @@ while(p.isConnected()):
         y = p.getBaseVelocity(lopta)[0][1]
         z = p.getBaseVelocity(lopta)[0][2]
         print(f"""Brzina po x osi: {x:.2f}\nBrzina po y osi: {y:.2f}\nBrzina po z osi: {z:.2f}""")
-        time.sleep(1)
+        #time.sleep(1)
         #p.resetBaseVelocity(lopta,[0,0,0])
-        p.disconnect()
+        #p.disconnect()
         
 
 input() 
