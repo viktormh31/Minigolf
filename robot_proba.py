@@ -2,6 +2,11 @@
 import time
 import pybullet as p
 import pybullet_data
+from dh_params.abb.irb140 import irb140DH
+import roboticstoolbox as rtb
+
+
+
 p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
@@ -69,12 +74,19 @@ def create_soccerball():
 
     return ball
 
-teren2 = p.loadSoftBody("/home/viktor/Documents/DIPLOMSKI/custom urdf/teren.dae")
+#teren2 = p.loadSoftBody("/home/viktor/Documents/DIPLOMSKI/custom urdf/teren.dae")
+
+def load_robot_irb140(start_position):
+    robot = p.loadURDF("/home/viktor/Documents/DIPLOMSKI/URDF fajlovi/urdf_files_dataset/urdf_files/robotics-toolbox/abb_irb140/urdf/irb140.urdf", 
+                       basePosition = start_position, useFixedBase = 1)
+    return robot
+
+
 
 
 #pomeranje
 force_magnitude = 6000
-time_step = 1 / 800.0
+time_step = 1 / 240.
 
 #p.setTimeStep(time_step)
 #bola = create_soccerball()
@@ -86,16 +98,52 @@ p.setGravity(0,0,-9.81)
 
 
 #import_teren([0,0,0])
+robot = load_robot_irb140([0,0,0])
+broj = p.getNumJoints(robot)
+position, orientation = p.getBasePositionAndOrientation(robot)
+print(f"""+++++++++++++++++++++++++++++++ {broj} 
+      {orientation} """)
+joint_0 = p.getJointInfo(robot,6)
+print(joint_0[1])
+endLink = p.getLinkState(robot,7)
+print(endLink[0])
 
-time.sleep(1)
+robott = rtb.models.DH.IRB140()
+print(robot)
+
+
+
+
+#p.resetBasePositionAndOrientation(robot, [0, 0, 0], [0, 0, 0, 1])
+
+
+time.sleep(1) 
+#p.setJointMotorControlArray(robot,[0], p.POSITION_CONTROL, targetPositions =[3*3.14])
+
+box_1 = p.loadURDF('/home/viktor/Documents/DIPLOMSKI/custom urdf/golf_stap.urdf',basePosition = [2,0,.5])
+position2, orientation2 = p.getBasePositionAndOrientation(box_1)
+
+targets = p.calculateInverseKinematics(robot, 7, [0,0,5])
+print(f"---{targets}---")
+p.setJointMotorControlArray(robot,range(6),p.POSITION_CONTROL, targetPositions = targets)
+
+
+#print(f"""+++++++++++++++++++++++++++++++ {position2} 
+ #     {orientation2} 
+   #   """)
+time.sleep(1) 
 #p.applyExternalForce(bola,-1, forceObj=[force_magnitude,0,0],posObj=[0,0,0], flags= p.WORLD_FRAME)
 #p.changeDynamics(sphere_1,-1, rollingFriction=0.001, spinningFriction=0.001)
 #p.applyExternalForce(sphere_1, -1, forceObj=[force_magnitude,0,0],posObj=[0,0,0], flags= p.WORLD_FRAME)
 #pomeranje
+###
 
-for _ in range(1000):
-    time.sleep(time_step)
+
+for _ in range(1200):
+    time.sleep(1/10.)
     p.stepSimulation()
     #print("hello")
+    
+
 input() 
 

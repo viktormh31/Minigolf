@@ -4,7 +4,7 @@ import pybullet as p
 import pybullet_data
 p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
-
+import roboticstoolbox as rtb
 
 plane_1 = p.loadURDF("plane.urdf")
 p.changeDynamics(plane_1, -1 , mass = 0.0, restitution = 0.9)
@@ -81,7 +81,7 @@ p.setGravity(0,0,-9.81)
 
 
 #---------------main funkcije-------------------
-lopta = create_sphere(.1,[0,0.2,3.3])
+lopta = create_sphere(.1,[0,0,3])
 teren = import_teren([0,0,1])
 #box = create_box([1, 1, 1],[3, 0, 1],[0, 0, 1.7, 1])
 #box_2 = create_box([1,1,1],[0,-3,1],[0,0,0,2])
@@ -101,9 +101,10 @@ time.sleep(4)
 
 flag = 0 #koristimo da bi loop samo jednom ispisao Upala u rupu.
 
+robott = rtb.models.DH.IRB140()
+print(robott)
 
-
-
+time.sleep(5)
 while(p.isConnected()):
     time.sleep(time_step)
     p.stepSimulation()
